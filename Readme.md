@@ -1,6 +1,7 @@
 # Dash-based dashboards
 
-Dashboard originally developed for ENVR 300 at UBC. Purpose is explore how signals, noise and slow trends affect abilities to learn about a simple artificial time series.
+Explore how signals, noise and slow trends affect abilities to learn about a simple artificial time series. 
+Dashboard originally developed for ENVR 300 at UBC. 
 
 ## How to run locally (on your own computer)
 Dash is a library for making interactive applications that will run in a browser window. See https://dash.plotly.com/. We are using "Dash open-source" NOT Dash Enterprise. 
