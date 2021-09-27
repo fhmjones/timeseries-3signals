@@ -18,7 +18,6 @@ import plotly.graph_objects as go
 from dash.dependencies import Input, Output
 import numpy as np
 from numpy import random
-import math #needed for definition of pi
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -155,7 +154,7 @@ def update_graph(ncycles, noiselevel, smoothwin, sine_checkbox, noise_checkbox, 
     # build the X-axis first, then the three time series: 
     xpoints = np.arange(0, ncycles, 0.05)
     N=len(xpoints)   # this may not be the most sophisticated approach 
-    ypoints = np.sin(xpoints*2*math.pi)
+    ypoints = np.sin(xpoints*2*3.14159)
     randpoints = noiselevel * (random.rand(N)-.5)
     trendpoints = 0.4*xpoints + 0.5
 
