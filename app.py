@@ -120,7 +120,7 @@ app.layout = html.Div([
           1. How much noise does it take to obscure the fact there is a nice sine-wave signal?
           2. If there are only 2 or 3 cycles of signal, can you tell there is a trend? What are the implications for the "length" of your data set or series of measurements?
           3. Does noise obscure the fact that there is a superimposed linear trend?
-          4. How much data (i.e. how long do you have to take measurements) before the trend is observed?
+          4. What does "more" smoothing do to the signal? Is there a compromise between not enough smoothing and too much? 
   
         ''')
 ], style={'width': '900px'}
