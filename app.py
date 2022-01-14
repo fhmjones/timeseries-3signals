@@ -28,26 +28,19 @@ app = dash.Dash(
     external_stylesheets=external_stylesheets
 )
 
+purpose = open("purpose.md", "r")
+purpose_markdown = purpose.read()
+
+instructions = open("instructions.md", "r")
+instructions_markdown = instructions.read()
+
 app.layout = html.Div([
-    dcc.Markdown('''
-        ### Noisy sine wave on a linear trend
-
-        #### Purpose
-
-        Demonstrate a synthetic signal consisting of _data + random noise + a linear trend_. 
-        Also show effect of smoothing the noisy signal. 
-        Signal is sine wave with adjustable samples/cycle and smoothing is an adjustable N-pt moving avg. (i.e. a N-pt boxcar convolution). 
-        Sine wave is plotted as points while smoothed is plotted as lines.
-
-        #### Instructions
-
-        Explore the dashboard and its controls. 
-        Note that figure-viewing controls in the figure's top-right corner only appear when your mouse is within the figure. 
-        As examples, click 'Autoscale' if graphs are off scale, or use "Reset axes to return to original scales.
-        Zoom within the graph using click and drag. Try it out! 
-
-        ----------
-        '''),
+    dcc.Markdown(
+        children=purpose_markdown
+    ),
+    dcc.Markdown(
+        children=instructions_markdown
+    ),
 
 # slider or checklist details at https://dash.plotly.com/dash-core-components
 # checkbox can be lumped together but then logic in "update_graph" is messier.
@@ -57,26 +50,15 @@ app.layout = html.Div([
         **Select signal components**
         '''),
         dcc.Checklist(
-            id='sine_checkbox',
+            id='signal_components',
             options=[
-                {'label': 'SineWave', 'value': 'sine'}
+                {'label': 'SineWave', 'value': 'sine'},
+                {'label': 'Noise', 'value': 'noise'},
+                {'label': 'Trend', 'value': 'trend'},
             ],
             value=['sine']
         ),
-        dcc.Checklist(
-            id='noise_checkbox',
-            options=[
-                {'label': 'Noise', 'value': 'noise'},
-            ],
-            value=['noise']
-        ),
-        dcc.Checklist(
-            id='trend_checkbox',
-            options=[
-                {'label': 'Trend', 'value': 'trend'},                
-            ],
-            value=[]
-        ),
+
         dcc.Markdown('''
         **Check to show smoothed**
         '''),
@@ -86,14 +68,21 @@ app.layout = html.Div([
                 {'label': 'Smoothed', 'value': 'smooth'}
             ],
             value=[]
-        )
+        ),
+
+        dcc.Markdown('''
+        **Trend angle (degrees)**
+        '''),
+        dcc.Slider(id='trend_angle', min=0, max=45, value=45, step=0.5,
+            marks={0:'0', 15:'15', 30:'30', 45:'45'}
+        ),
     ], style={'width': '48%', 'display': 'inline-block'}),
 
     html.Div([
         # html.P('Set signal parameters'),
         html.Label('No. cycles:'),
-        dcc.Slider(id='ncycles', min=2, max=10, value=3, step=0.5,
-            marks={2:'2', 4:'4', 6:'6', 8:'8', 10:'10'}
+        dcc.Slider(id='ncycles', min=1, max=10, value=3, step=0.5,
+            marks={1:'1', 2:'2', 3:'3', 4:'4', 5:'5', 6:'6', 7:'7', 8:'8', 9:'9', 10:'10'}
             # tooltip={'always_visible':True, 'placement':'topLeft'}
         ),
         html.Label('Noise level'),
@@ -110,19 +99,6 @@ app.layout = html.Div([
 
     dcc.Graph(id='indicator-graphic'),
 
-    dcc.Markdown('''
-        ----
-        
-        ### Questions students could consider
-
-        These are examples of questions to drive teaching discussions or learning assignments. Questions are not necessarily well-posed. Also, most are judgement calls - which is part of the point!
-
-          1. How much noise does it take to obscure the fact there is a nice sine-wave signal?
-          2. If there are only 2 or 3 cycles of signal, can you tell there is a trend? What are the implications for the "length" of your data set or series of measurements?
-          3. Does noise obscure the fact that there is a superimposed linear trend?
-          4. What does "more" smoothing do to the signal? Is there a compromise between not enough smoothing and too much? 
-  
-        ''')
 ], style={'width': '900px'}
 )
 
@@ -144,24 +120,24 @@ def moving_avg(x, w):
     Input('ncycles', 'value'),
     Input('noiselevel', 'value'),
     Input('smoothwin', 'value'),
-    Input('sine_checkbox', 'value'),
-    Input('noise_checkbox', 'value'),
-    Input('trend_checkbox', 'value'),
-    Input('smooth_checkbox', 'value')  
-    )    
-def update_graph(ncycles, noiselevel, smoothwin, sine_checkbox, noise_checkbox, trend_checkbox, smooth_checkbox,):
+    Input('signal_components', 'value'),
+    Input('smooth_checkbox', 'value'),
+    Input('trend_angle', 'value'),
+)
+def update_graph(ncycles, noiselevel, smoothwin, signal_components, smooth_checkbox, trend_angle):
     # make a noisy sine wave on a linear trend
     # build the X-axis first, then the three time series: 
-    xpoints = np.arange(0, ncycles, 0.05)
+    xpoints = np.arange(0, ncycles+0.05, 0.05)
     N=len(xpoints)   # this may not be the most sophisticated approach 
-    ypoints = np.sin(xpoints*2*3.14159)
-    randpoints = noiselevel * (random.rand(N)-.5)
-    trendpoints = 0.4*xpoints + 0.5
+    ypoints = np.sin(xpoints*2*np.pi)
+    randpoints = 2 * noiselevel * (random.rand(N)-.5)
+    slope = np.tan(trend_angle*(np.pi/180))
+    trendpoints = slope*xpoints# + 0.5
 
     a1 = a2 = a3 = 0
-    if sine_checkbox == ['sine']: a1 = 1
-    if noise_checkbox == ['noise']: a2 = 1
-    if trend_checkbox == ['trend']: a3 = 1
+    if 'sine' in signal_components: a1 = 1
+    if 'noise' in signal_components: a2 = 1
+    if 'trend' in signal_components: a3 = 1
     
     if a1 or a2 or a3: sumpoints = a1*ypoints + a2*randpoints + a3*trendpoints
     else: sumpoints = []
