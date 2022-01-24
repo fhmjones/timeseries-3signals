@@ -56,7 +56,8 @@ app.layout = html.Div([
                 {'label': 'Noise', 'value': 'noise'},
                 {'label': 'Trend', 'value': 'trend'},
             ],
-            value=['sine']
+            value=['sine'],
+            style={'margin-bottom': '20px'},
         ),
 
         dcc.Markdown('''
@@ -67,34 +68,40 @@ app.layout = html.Div([
             options=[
                 {'label': 'Smoothed', 'value': 'smooth'}
             ],
-            value=[]
+            value=[],
+            style={'margin-bottom': '20px'},
         ),
 
         dcc.Markdown('''
         **Trend angle (degrees)**
         '''),
         dcc.Slider(id='trend_angle', min=0, max=45, value=45, step=0.5,
-            marks={0:'0', 15:'15', 30:'30', 45:'45'}
+            marks={0:'0', 15:'15', 30:'30', 45:'45'},
+            tooltip={'always_visible':True, 'placement':'topLeft'}
         ),
-    ], style={'width': '48%', 'display': 'inline-block'}),
+    ], style={'width': '48%', 'display': 'inline-block', 'vertical-align': 'middle'}),
 
     html.Div([
-        # html.P('Set signal parameters'),
-        html.Label('No. cycles:'),
-        dcc.Slider(id='ncycles', min=1, max=10, value=3, step=0.5,
-            marks={1:'1', 2:'2', 3:'3', 4:'4', 5:'5', 6:'6', 7:'7', 8:'8', 9:'9', 10:'10'}
-            # tooltip={'always_visible':True, 'placement':'topLeft'}
-        ),
-        html.Label('Noise level'),
-        dcc.Slider(id='noiselevel', min=0.0, max=3.0, value=1.0, step=0.25,
-            marks={0:'0', 1:'1', 2:'2', 3:'3'}
-            # tooltip={'always_visible':True, 'placement':'topLeft'}
-        ),
+        html.Div([
+            html.Label('No. cycles:'),
+            dcc.Slider(id='ncycles', min=1, max=10, value=3, step=0.5,
+                marks={1:'1', 2:'2', 3:'3', 4:'4', 5:'5', 6:'6', 7:'7', 8:'8', 9:'9', 10:'10'},
+                tooltip={'always_visible':True, 'placement':'topLeft'},
+            ),
+        ], style={'margin-bottom': '20px'}),
+        html.Div([
+            html.Label('Noise level'),
+            dcc.Slider(id='noiselevel', min=0.0, max=3.0, value=1.0, step=0.25,
+                marks={0:'0', 1:'1', 2:'2', 3:'3'},
+                tooltip={'always_visible':True, 'placement':'topLeft'}
+            ),
+        ], style={'margin-bottom': '20px'}),
         html.Label('N-pt smoothing'),
         dcc.Slider(id='smoothwin', min=1.0, max=15.0, value=5.0, step=2.0,
-            marks={1:'1', 3:'3', 5:'5', 7:'7', 9:'9', 11:'11', 13:'13', 15:'15'}
+            marks={1:'1', 3:'3', 5:'5', 7:'7', 9:'9', 11:'11', 13:'13', 15:'15'},
+            tooltip={'always_visible':True, 'placement':'topLeft'}
         )
-    ], style={'width': '48%', 'display': 'inline-block'}
+    ], style={'width': '48%', 'display': 'inline-block', 'vertical-align': 'middle'}
     ),
 
     dcc.Graph(id='indicator-graphic'),
