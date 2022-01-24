@@ -86,8 +86,8 @@ app.layout = html.Div([
             # tooltip={'always_visible':True, 'placement':'topLeft'}
         ),
         html.Label('Noise level'),
-        dcc.Slider(id='noiselevel', min=0.0, max=5.0, value=1.0, step=0.25,
-            marks={0:'0', 1:'1', 2:'2', 3:'3', 4:'4', 5:'5'}
+        dcc.Slider(id='noiselevel', min=0.0, max=3.0, value=1.0, step=0.25,
+            marks={0:'0', 1:'1', 2:'2', 3:'3'}
             # tooltip={'always_visible':True, 'placement':'topLeft'}
         ),
         html.Label('N-pt smoothing'),
@@ -151,10 +151,16 @@ def update_graph(ncycles, noiselevel, smoothwin, signal_components, smooth_check
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=xpoints, y=sumpoints,
                     mode='lines',
-                    name='signal'))
+                    name='signal', 
+                    marker=dict(
+                        color='DodgerBlue',
+                    )))
     fig.add_trace(go.Scatter(x=xpoints, y=smoothpoints,
                     mode='lines',
-                    name='smoothed'))
+                    name='smoothed', 
+                    marker=dict(
+                        color='DarkOrange',
+                    )))
 
     fig.update_layout(xaxis_title='Time', yaxis_title='Value')
     fig.update_xaxes(range=[0, 10])
