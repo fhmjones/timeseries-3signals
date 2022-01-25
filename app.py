@@ -8,14 +8,13 @@
 # plotly express line parameters via https://plotly.com/python-api-reference/generated/plotly.express.line.html#plotly.express.line
 
 from os import environ
-
-import dash
 import numpy as np
 
-import plotly.graph_objects as go
-from dash import dcc
-from dash import html
+import dash
+from dash import dcc, html
 from dash.dependencies import Input, Output
+import plotly.graph_objects as go
+
 from flask import Flask
 from numpy import random
 
